@@ -1,0 +1,2 @@
+# dlitedb
+Distributed LiteDB
