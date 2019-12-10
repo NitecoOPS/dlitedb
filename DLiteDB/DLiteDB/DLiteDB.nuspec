@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>DLiteDB</id>
+        <version>$version$</version>
+        <title>DLiteDB</title>
+        <authors>Niteco AB</authors>
+        <owners>Niteco AB</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Distributed LiteDB</description>
+        <releaseNotes>Initial release of the Distributed LiteDB package.</releaseNotes>
+        <copyright>Copyright 2019</copyright>
+        <tags>DLiteDB</tags>
+        <dependencies>
+            <dependency id="log4net" version="[2.0.8,)" />
+            <dependency id="LiteDB" version="[4.1.4,)" />
+            <dependency id="Niteco.ZNet" version="[1.0.0-rc4,)" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\$configuration$\DLiteDB.dll" target="lib\net48\" />
+        <file src="bin\$configuration$\DLiteDB.zip" target="content\DLiteDB\" />
+    </files>
+</package>
