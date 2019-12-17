@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace DLiteDB
 {
@@ -90,6 +91,49 @@ namespace DLiteDB
                         Entry = args
                     });
                 });
+        }
+
+        public static MethodInfo FindMethod(this object obj, string methodName, ref object[] args)
+        {
+            var methods = obj.GetType().GetMethods().Where(m => m.Name.Equals(methodName));
+            if (methods == null || !methods.Any()) return null;
+
+            MethodInfo result = null;
+            foreach (var m in methods)
+            {
+                result = m;
+
+                var margs = m.GetParameters();
+
+                if (margs.Length == 0 && args.Length == 0) return m;
+                if (margs.Length < args.Length) continue;
+
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if (!margs[i].ParameterType.IsInstanceOfType(args[i]))
+                    {
+                        result = null;
+                        break;
+                    }
+                }
+
+                if (result != null)
+                {
+                    if (margs.Length == args.Length) break;
+                    for (int i = args.Length; i < margs.Length; i++)
+                    {
+                        if (!margs[i].HasDefaultValue)
+                        {
+                            result = null;
+                            break;
+                        }
+
+                        args = args.Concat(new object[] { Type.Missing }).ToArray();
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

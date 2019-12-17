@@ -12,6 +12,7 @@
         <copyright>Copyright 2019</copyright>
         <tags>DLiteDB</tags>
         <dependencies>
+            <dependency id="AsyncIO" version="[0.1.69,)" />
             <dependency id="log4net" version="[2.0.8,)" />
             <dependency id="LiteDB" version="[4.1.4,)" />
             <dependency id="Niteco.ZNet" version="[1.0.0-rc4,)" />

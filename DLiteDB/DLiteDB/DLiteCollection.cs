@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace DLiteDB
 {
-    public class DLiteCollection<T>
+    public class DLiteCollection<T> : IDLiteCollection<T>
     {
         static LiteCollection<T> LiteCollection;
 
@@ -21,11 +21,6 @@ namespace DLiteDB
             return LiteCollection.Count();
         }
 
-        public int Count(BsonExpression predicate)
-        {
-            return LiteCollection.Count(predicate);
-        }
-
         public int Count(Expression<Func<T, bool>> predicate)
         {
             return LiteCollection.Count(predicate);
@@ -36,44 +31,22 @@ namespace DLiteDB
             return LiteCollection.Count(query);
         }
 
-        public int Count(string predicate, BsonDocument parameters)
-        {
-            return LiteCollection.Count(predicate, parameters);
-        }
-
-        public int Count(string predicate, params BsonValue[] args)
-        {
-            return LiteCollection.Count(predicate, args);
-        }
-
         public bool Delete(BsonValue id)
         {
             DLiteUtil.Whisper(Name, "Delete", new object[] { id });
             return LiteCollection.Delete(id);
         }
 
-        public int DeleteMany(BsonExpression predicate)
+        public int Delete(Expression<Func<T, bool>> predicate)
         {
-            DLiteUtil.Whisper(Name, "DeleteMany", new object[] { predicate });
-            return LiteCollection.DeleteMany(predicate);
+            DLiteUtil.Whisper(Name, "Delete", new object[] { predicate });
+            return LiteCollection.Delete(predicate);
         }
 
-        public int DeleteMany(Expression<Func<T, bool>> predicate)
+        public int Delete(Query query)
         {
-            DLiteUtil.Whisper(Name, "DeleteMany", new object[] { predicate });
-            return LiteCollection.DeleteMany(predicate);
-        }
-
-        public int DeleteMany(string predicate, BsonDocument parameters)
-        {
-            DLiteUtil.Whisper(Name, "DeleteMany", new object[] { predicate, parameters });
-            return LiteCollection.DeleteMany(predicate, parameters);
-        }
-
-        public int DeleteMany(string predicate, params BsonValue[] args)
-        {
-            DLiteUtil.Whisper(Name, "DeleteMany", new object[] { predicate, args });
-            return LiteCollection.DeleteMany(predicate, args);
+            DLiteUtil.Whisper(Name, "Delete", new object[] { query });
+            return LiteCollection.Delete(query);
         }
 
         public bool DropIndex(string name)
@@ -82,29 +55,24 @@ namespace DLiteDB
             return LiteCollection.DropIndex(name);
         }
 
-        public bool EnsureIndex(BsonExpression expression, bool unique = false)
-        {
-            return LiteCollection.EnsureIndex(expression, unique);
-        }
-
-        public bool EnsureIndex(string name, BsonExpression expression, bool unique = false)
-        {
-            return LiteCollection.EnsureIndex(name, expression, unique);
-        }
-
         public bool EnsureIndex<K>(Expression<Func<T, K>> keySelector, bool unique = false)
         {
             return LiteCollection.EnsureIndex<K>(keySelector, unique);
         }
 
-        public bool EnsureIndex<K>(string name, Expression<Func<T, K>> keySelector, bool unique = false)
+        public bool EnsureIndex(string field, bool unique = false)
         {
-            return LiteCollection.EnsureIndex<K>(name, keySelector, unique);
+            return LiteCollection.EnsureIndex(field, unique);
         }
 
-        public bool Exists(BsonExpression predicate)
+        public bool EnsureIndex(string field, string expression, bool unique = false)
         {
-            return LiteCollection.Exists(predicate);
+            return LiteCollection.EnsureIndex(field, expression, unique);
+        }
+
+        public bool EnsureIndex<K>(Expression<Func<T, K>> property, string expression, bool unique = false)
+        {
+            return LiteCollection.EnsureIndex<K>(property, expression, unique);
         }
 
         public bool Exists(Expression<Func<T, bool>> predicate)
@@ -115,21 +83,6 @@ namespace DLiteDB
         public bool Exists(Query query)
         {
             return LiteCollection.Exists(query);
-        }
-
-        public bool Exists(string predicate, BsonDocument parameters)
-        {
-            return LiteCollection.Exists(predicate, parameters);
-        }
-
-        public bool Exists(string predicate, params BsonValue[] args)
-        {
-            return LiteCollection.Exists(predicate, args);
-        }
-
-        public IEnumerable<T> Find(BsonExpression predicate, int skip = 0, int limit = int.MaxValue)
-        {
-            return LiteCollection.Find(predicate, skip, limit);
         }
 
         public IEnumerable<T> Find(Expression<Func<T, bool>> predicate, int skip = 0, int limit = int.MaxValue)
@@ -152,16 +105,6 @@ namespace DLiteDB
             return LiteCollection.FindById(id);
         }
 
-        public T FindOne(BsonExpression predicate)
-        {
-            return LiteCollection.FindOne(predicate);
-        }
-
-        public T FindOne(BsonExpression predicate, params BsonValue[] args)
-        {
-            return LiteCollection.FindOne(predicate, args);
-        }
-
         public T FindOne(Expression<Func<T, bool>> predicate)
         {
             return LiteCollection.FindOne(predicate);
@@ -172,19 +115,29 @@ namespace DLiteDB
             return LiteCollection.FindOne(query);
         }
 
-        public T FindOne(string predicate, BsonDocument parameters)
+        public IEnumerable<IndexInfo> GetIndexes()
         {
-            return LiteCollection.FindOne(predicate, parameters);
-        }
-
-        public LiteCollection<T> Include(BsonExpression keySelector)
-        {
-            return LiteCollection.Include(keySelector);
+            return LiteCollection.GetIndexes();
         }
 
         public LiteCollection<T> Include<K>(Expression<Func<T, K>> keySelector)
         {
             return LiteCollection.Include<K>(keySelector);
+        }
+
+        public LiteCollection<T> Include(string path)
+        {
+            return LiteCollection.Include(path);
+        }
+
+        public LiteCollection<T> Include(string[] paths)
+        {
+            return LiteCollection.Include(paths);
+        }
+
+        public LiteCollection<T> IncludeAll(int maxDepth = -1)
+        {
+            return LiteCollection.IncludeAll(maxDepth);
         }
 
         public void Insert(BsonValue id, T entity)
@@ -217,11 +170,6 @@ namespace DLiteDB
             return LiteCollection.LongCount();
         }
 
-        public long LongCount(BsonExpression predicate)
-        {
-            return LiteCollection.LongCount(predicate);
-        }
-
         public long LongCount(Expression<Func<T, bool>> predicate)
         {
             return LiteCollection.LongCount(predicate);
@@ -232,29 +180,19 @@ namespace DLiteDB
             return LiteCollection.LongCount(query);
         }
 
-        public long LongCount(string predicate, BsonDocument parameters)
-        {
-            return LiteCollection.LongCount(predicate, parameters);
-        }
-
-        public long LongCount(string predicate, params BsonValue[] args)
-        {
-            return LiteCollection.LongCount(predicate, args);
-        }
-
         public BsonValue Max()
         {
             return LiteCollection.Max();
         }
 
-        public BsonValue Max(BsonExpression keySelector)
+        public BsonValue Max(string field)
         {
-            return LiteCollection.Max(keySelector);
+            return LiteCollection.Max(field);
         }
 
-        public K Max<K>(Expression<Func<T, K>> keySelector)
+        public BsonValue Max<K>(Expression<Func<T, K>> property)
         {
-            return LiteCollection.Max<K>(keySelector);
+            return LiteCollection.Max<K>(property);
         }
 
         public BsonValue Min()
@@ -262,19 +200,14 @@ namespace DLiteDB
             return LiteCollection.Min();
         }
 
-        public BsonValue Min(BsonExpression keySelector)
+        public BsonValue Min(string field)
         {
-            return LiteCollection.Min(keySelector);
+            return LiteCollection.Min(field);
         }
 
-        public K Min<K>(Expression<Func<T, K>> keySelector)
+        public BsonValue Min<K>(Expression<Func<T, K>> property)
         {
-            return LiteCollection.Min<K>(keySelector);
-        }
-
-        public ILiteQueryable<T> Query()
-        {
-            return LiteCollection.Query();
+            return LiteCollection.Min<K>(property);
         }
 
         public bool Update(BsonValue id, T entity)
@@ -293,18 +226,6 @@ namespace DLiteDB
         {
             DLiteUtil.Whisper(Name, "Update", new object[] { entity });
             return LiteCollection.Update(entity);
-        }
-
-        public int UpdateMany(BsonExpression transform, BsonExpression predicate)
-        {
-            DLiteUtil.Whisper(Name, "UpdateMany", new object[] { transform, predicate });
-            return LiteCollection.UpdateMany(transform, predicate);
-        }
-
-        public int UpdateMany(Expression<Func<T, T>> extend, Expression<Func<T, bool>> predicate)
-        {
-            DLiteUtil.Whisper(Name, "UpdateMany", new object[] { extend, predicate });
-            return LiteCollection.UpdateMany(extend, predicate);
         }
 
         public bool Upsert(BsonValue id, T entity)
