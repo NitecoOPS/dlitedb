@@ -74,7 +74,7 @@
       <Version>4.1.4</Version>
     </PackageReference>
     <PackageReference Include="log4net">
-      <Version>2.0.8</Version>
+      <Version>2.0.10</Version>
     </PackageReference>
     <PackageReference Include="NetMQ">
       <Version>4.0.0.272-pre</Version>
